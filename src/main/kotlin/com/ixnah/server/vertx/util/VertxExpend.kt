@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap
  * 从当前线程上下文获取Vertx
  * 如果不是Vertx线程则抛出异常
  */
-fun getOrCreateVertx(): Vertx {
+fun getCurrentVertx(): Vertx {
   return if (Context.isOnVertxThread())
     Vertx.currentContext().owner()
   else
@@ -31,7 +31,7 @@ class GlobalRouter {
      * 如果不存在则新建
      */
     fun getRouter(): Router {
-      val vertx = getOrCreateVertx()
+      val vertx = getCurrentVertx()
       val memoryAddress = System.identityHashCode(vertx) // 获取Vertx对象的物理内存地址
       return routerMap.getOrPut(memoryAddress) { Router.router(vertx) }
     }
